@@ -240,6 +240,8 @@ export default function PythonQuiz() {
       if (sel === null) return;
       setSelected(sel);
       correct = sel === q.correct;
+      // DEBUG — remove after issue is diagnosed
+      console.log(`[quiz] Q${q.id} graded | sel=${sel} q.correct=${q.correct} correct=${correct} | options:`, q.options);
     }
     setConfirmed(true);
     setTimePerQ(t => [...t, elapsed]);
