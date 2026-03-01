@@ -8,7 +8,7 @@
 
 ## What it is
 
-A single-page React app that turns Python revision into a game. 82 questions across eight chapters, four play modes, a live Python sandbox powered by WebAssembly, and a full gamification layer — XP, levels, streaks, achievements, a daily challenge, and confetti on a perfect score.
+A single-page React app that turns Python revision into a game. 160 questions across eight chapters, four play modes, a live Python sandbox powered by WebAssembly, and a full gamification layer — XP, levels, streaks, achievements, a daily challenge, and confetti on a perfect score.
 
 The alien/teal aesthetic is intentional — it belongs to the person it was built for.
 
@@ -17,7 +17,7 @@ The alien/teal aesthetic is intentional — it belongs to the person it was buil
 ## Features
 
 ### Core quiz
-- **82 questions** spanning Chapters 1–8 of a Python fundamentals course
+- **160 questions** spanning Chapters 1–8 of a Python fundamentals course
 - **Multiple-choice and fill-in-the-blank** question types
 - **Syntax-highlighted code blocks** with a custom Dracula-inspired tokenizer
 - **Live Python sandbox** (`area51.py`) powered by [Pyodide](https://pyodide.org) (Python in WebAssembly — no server, runs entirely in the browser) — lazy-loaded only when you open it
@@ -96,14 +96,14 @@ The alien/teal aesthetic is intentional — it belongs to the person it was buil
 
 | # | Title | Topics | Questions |
 |---|---|---|---|
-| 1 | Basics | Syntax errors, pseudocode, escape characters, `print()`, `int()`, math, user input, f-strings, type conversion, string repetition | 12 |
-| 2 | Logic | Booleans, logical operators, short-circuit evaluation, comparison operators, chained comparisons, truthiness | 7 |
-| 3 | If Statements | Conditions, `elif`, indentation, nested if, conditional expressions | 6 |
-| 4 | Loops | `for`, `while`, `range()`, augmented assignment, accumulator, input validation, `break`, `continue`, `enumerate()` | 10 |
-| 5 | Lists & Functions | Lists, `for` + lists, void vs value-returning, nested calls, scope, walrus operator, default parameters, list methods, multiple return values, list comprehension | 10 |
-| 6 | Lists Deep Dive | Indexing, negative indexes, tuples vs lists, `range()` → list, `*` repetition, `IndexError`, `len()`, `for` + strings, `in` operator, concatenation, `pop()`, `remove()`, 2D lists, `insert()`, `count()` | 13 |
-| 7 | Strings | Slicing, `split()`, `strip()`, string methods (`upper`, `isalpha`, `endswith`, `replace`), concatenation, functions with strings, `find()`, string immutability, f-string expressions, `startswith`/`count` | 9 |
-| 8 | OOP | Classes vs objects, defining classes, encapsulation, getters/setters, `__init__`, `__str__`, objects as arguments, polymorphism, inheritance, base vs subclass, `super()`, method overriding, `isinstance()`, class variables | 15 |
+| 1 | Basics | Syntax errors, pseudocode, escape characters, `print()`, `int()`, math, user input, f-strings, type conversion, floor division, modulo, `round()`, `type()`, augmented assignment | 20 |
+| 2 | Logic | Booleans, logical operators, short-circuit, comparison operators, chained comparisons, truthiness, `any()`, `all()`, boolean arithmetic | 20 |
+| 3 | If Statements | Conditions, `elif`, indentation, nested if, ternary expressions, `pass`, membership, falsy values, input validation | 20 |
+| 4 | Loops | `for`, `while`, `range()`, augmented assignment, accumulator, `break`, `continue`, `enumerate()`, `reversed()`, `zip()`, `for/else` | 20 |
+| 5 | Lists & Functions | Lists, functions, scope, walrus operator, default parameters, `append()`, `extend()`, `sorted()`, slicing, `*args`, `max()`/`min()`, list comprehension | 20 |
+| 6 | Lists Deep Dive | Indexing, negative indexes, tuples, `range()` → list, `*` repetition, `IndexError`, `len()`, `pop()`, `remove()`, 2D lists, `index()`, unpacking, `del` | 20 |
+| 7 | Strings | Slicing, `split()`, `strip()`, `replace()`, `join()`, `upper()`/`lower()`, `isdigit()`, `isalpha()`, `find()`, f-strings, immutability, triple quotes | 20 |
+| 8 | OOP | Classes, encapsulation, `__init__`, `__str__`, `@property`, inheritance, `super()`, method overriding, `isinstance()`, class variables, duck typing | 20 |
 
 ---
 
@@ -185,7 +185,7 @@ python-first-contact/
 │   │   ├── chapters.js      # Chapter definitions + accent colours
 │   │   ├── levels.js        # Level thresholds + getLevel()
 │   │   ├── palette.js       # D colour object
-│   │   └── questions.js     # All 82 questions
+│   │   └── questions.js     # All 160 questions (20 per chapter)
 │   ├── hooks/
 │   │   ├── useAchievements.js
 │   │   ├── useCallsign.js

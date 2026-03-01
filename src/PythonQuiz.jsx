@@ -55,7 +55,7 @@ function setSpeedPB(chapterLabel, seconds) {
 /* ─── MAIN APP ──────────────────────────────────────────────────────────── */
 export default function PythonQuiz() {
   const isMobile  = useIsMobile();
-  const [settings, setSettings] = useState({ sound: true, timerDuration: 30 });
+  const [settings, setSettings] = useState({ sound: true, timerDuration: 30, questionCount: null });
   const sounds    = useSounds(settings.sound);
   const { history, save: saveSession, clear: clearHistory } = useSessionHistory();
   const { loading: pyLoading, error: pyError, runCode, load: loadPyodide } = usePyodide();
@@ -176,7 +176,16 @@ export default function PythonQuiz() {
   // ── Start quiz ──
   const startQuiz = (chapIdx, pool, m = "standard", isDaily = false) => {
     const ch       = CHAPTERS[chapIdx];
-    const qs       = pool || (ch.ids ? ALL_QUESTIONS.filter(q => ch.ids.includes(q.id)) : ALL_QUESTIONS);
+    let qs         = pool || (ch.ids ? ALL_QUESTIONS.filter(q => ch.ids.includes(q.id)) : ALL_QUESTIONS);
+    // Apply session question count limit (not for explicit pools like daily/missed drill)
+    if (!pool && settings.questionCount && settings.questionCount < qs.length) {
+      const tmp = [...qs];
+      for (let i = tmp.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [tmp[i], tmp[j]] = [tmp[j], tmp[i]];
+      }
+      qs = tmp.slice(0, settings.questionCount);
+    }
     const shuffled = [...qs].sort(() => Math.random() - 0.5).map(qItem => {
       if (qItem.fillBlankAnswer) return qItem;
       // Fisher-Yates shuffle — unbiased, guaranteed correct index tracking
@@ -427,7 +436,7 @@ export default function PythonQuiz() {
           </div>
           <div style={{ fontFamily: "'Fira Sans',sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 4, textTransform: "uppercase", color: D.comment, marginBottom: 6 }}>Gravemind Gallery Presents</div>
           <h1 style={{ fontFamily: "'Fira Sans',sans-serif", fontSize: isMobile ? 24 : 32, fontWeight: 800, color: D.fg, margin: "0 0 6px", letterSpacing: -0.5 }}>Python: First Contact</h1>
-          <p style={{ fontFamily: "'Fira Code',monospace", color: D.comment, fontSize: 12, margin: 0, lineHeight: 1.6 }}>82 questions · Chapters 1–8 · Shuffled each round</p>
+          <p style={{ fontFamily: "'Fira Code',monospace", color: D.comment, fontSize: 12, margin: 0, lineHeight: 1.6 }}>160 questions · Chapters 1–8 · Shuffled each round</p>
         </div>
 
         <div style={{ width: "100%", maxWidth: 520, animation: "slideUp 0.4s ease-out 0.06s both" }}>
@@ -468,7 +477,7 @@ export default function PythonQuiz() {
                   <div style={{ fontFamily: "'Fira Code',monospace", fontSize: 10, color: D.comment }}>{ch.sub}</div>
                 </div>
                 <div style={{ fontFamily: "'Fira Code',monospace", fontSize: 11, color: D.comment, whiteSpace: "nowrap", marginLeft: 12 }}>
-                  {ch.ids ? `${ch.ids.length} Qs` : "51 Qs"} →
+                  {ch.ids ? `${ch.ids.length} Qs` : `${ALL_QUESTIONS.length} Qs`} →
                 </div>
               </button>
             ))}
