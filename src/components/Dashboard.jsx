@@ -1,4 +1,5 @@
 import { D } from "../constants/palette.js";
+import { ACHIEVEMENTS } from "../hooks/useAchievements.js";
 
 function StreakCalendar({ history }) {
   const dateMap = {};
@@ -39,7 +40,7 @@ function StreakCalendar({ history }) {
   );
 }
 
-export function Dashboard({ history, onClear, onBack, isMobile }) {
+export function Dashboard({ history, onClear, onBack, isMobile, earned = new Set() }) {
   if (history.length === 0) return (
     <div style={{ textAlign: "center", padding: "60px 20px" }}>
       <div style={{ fontFamily: "'Fira Code',monospace", fontSize: 48, marginBottom: 16 }}>📊</div>
@@ -112,6 +113,25 @@ export function Dashboard({ history, onClear, onBack, isMobile }) {
           ))}
         </div>
       )}
+
+      <div style={{ background: D.bg, border: `1px solid ${D.currentLine}`, borderRadius: 10, padding: "16px 18px", marginBottom: 16 }}>
+        <div style={{ fontFamily: "'Fira Sans',sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: D.comment, marginBottom: 14 }}>
+          Achievements <span style={{ color: D.purple, fontFamily: "'Fira Code',monospace" }}>{earned.size}/{ACHIEVEMENTS.length}</span>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr 1fr" : "repeat(4,1fr)", gap: 8 }}>
+          {ACHIEVEMENTS.map(a => {
+            const unlocked = earned.has(a.id);
+            return (
+              <div key={a.id} title={a.desc}
+                style={{ background: unlocked ? `${D.purple}18` : D.bgDark, border: `1.5px solid ${unlocked ? D.purple + "66" : D.currentLine}`, borderRadius: 8, padding: "12px 10px", textAlign: "center", opacity: unlocked ? 1 : 0.45, transition: "all 0.2s" }}>
+                <div style={{ fontSize: 22, marginBottom: 4 }}>{unlocked ? a.icon : "🔒"}</div>
+                <div style={{ fontFamily: "'Fira Sans',sans-serif", fontSize: 11, fontWeight: 700, color: unlocked ? D.fg : D.comment, marginBottom: 2 }}>{a.label}</div>
+                <div style={{ fontFamily: "'Fira Code',monospace", fontSize: 9, color: D.comment, lineHeight: 1.4 }}>{a.desc}</div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
 
       <button onClick={onClear}
         style={{ background: "none", border: `1px solid ${D.red}44`, borderRadius: 8, padding: "10px 18px", fontFamily: "'Fira Sans',sans-serif", fontSize: 12, color: D.red, cursor: "pointer", marginTop: 4 }}>

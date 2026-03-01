@@ -172,7 +172,11 @@ export default function PythonQuiz() {
   const startQuiz = (chapIdx, pool, m = "standard", isDaily = false) => {
     const ch       = CHAPTERS[chapIdx];
     const qs       = pool || (ch.ids ? ALL_QUESTIONS.filter(q => ch.ids.includes(q.id)) : ALL_QUESTIONS);
-    const shuffled = [...qs].sort(() => Math.random() - 0.5);
+    const shuffled = [...qs].sort(() => Math.random() - 0.5).map(qItem => {
+      if (qItem.fillBlankAnswer) return qItem;
+      const order = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
+      return { ...qItem, options: order.map(i => qItem.options[i]), correct: order.indexOf(qItem.correct) };
+    });
     setIsDailyMode(isDaily);
     setSessionXP(0);
     if (m === "flashcard") {
@@ -493,7 +497,7 @@ export default function PythonQuiz() {
       {overlays}
       <div style={{ minHeight: "100vh", background: D.bgDark, padding: isMobile ? "16px 16px" : "32px 24px", display: "flex", flexDirection: "column", alignItems: "center" }}>
         <div style={{ width: "100%", maxWidth: 640 }}>
-          <Dashboard history={history} onClear={clearHistory} onBack={() => setView("menu")} isMobile={isMobile}/>
+          <Dashboard history={history} onClear={clearHistory} onBack={() => setView("menu")} isMobile={isMobile} earned={achieve.earned}/>
         </div>
       </div>
     </>

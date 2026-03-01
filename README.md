@@ -8,7 +8,7 @@
 
 ## What it is
 
-A single-page React app that turns Python revision into a game. 25 questions across five chapters, four play modes, a live Python sandbox powered by WebAssembly, and a full gamification layer — XP, levels, streaks, achievements, a daily challenge, and confetti on a perfect score.
+A single-page React app that turns Python revision into a game. 51 questions across eight chapters, four play modes, a live Python sandbox powered by WebAssembly, and a full gamification layer — XP, levels, streaks, achievements, a daily challenge, and confetti on a perfect score.
 
 The alien/teal aesthetic is intentional — it belongs to the person it was built for.
 
@@ -17,7 +17,7 @@ The alien/teal aesthetic is intentional — it belongs to the person it was buil
 ## Features
 
 ### Core quiz
-- **25 questions** spanning Chapters 1–5 of a Python fundamentals course
+- **51 questions** spanning Chapters 1–8 of a Python fundamentals course
 - **Multiple-choice and fill-in-the-blank** question types
 - **Syntax-highlighted code blocks** with a custom Dracula-inspired tokenizer
 - **Live Python sandbox** (`area51.py`) powered by [Pyodide](https://pyodide.org) (Python in WebAssembly — no server, runs entirely in the browser) — lazy-loaded only when you open it
@@ -101,6 +101,9 @@ The alien/teal aesthetic is intentional — it belongs to the person it was buil
 | 3 | If Statements | Conditions, `elif`, indentation | 2 |
 | 4 | Loops | `for`, `while`, `range()`, augmented assignment, accumulator, input validation | 6 |
 | 5 | Lists & Functions | Lists, `for` + lists, void vs value-returning, nested calls, scope, walrus operator | 6 |
+| 6 | Lists Deep Dive | Indexing, negative indexes, tuples vs lists, `range()` → list, `*` repetition, `IndexError`, `len()`, `for` + strings, `in` operator, concatenation | 10 |
+| 7 | Strings | Slicing, `split()`, `strip()`, string methods (`upper`, `isalpha`, `endswith`, `replace`), concatenation, functions with strings | 5 |
+| 8 | OOP | Classes vs objects, defining classes, encapsulation, getters/setters, `__init__`, `__str__`, objects as arguments, polymorphism, inheritance, base vs subclass | 11 |
 
 ---
 
@@ -182,7 +185,7 @@ python-first-contact/
 │   │   ├── chapters.js      # Chapter definitions + accent colours
 │   │   ├── levels.js        # Level thresholds + getLevel()
 │   │   ├── palette.js       # D colour object
-│   │   └── questions.js     # All 25 questions
+│   │   └── questions.js     # All 51 questions
 │   ├── hooks/
 │   │   ├── useAchievements.js
 │   │   ├── useCallsign.js
@@ -228,6 +231,7 @@ python-first-contact/
 - **Zero server.** Pyodide downloads the Python runtime (~10 MB) from jsDelivr CDN the first time you open the sandbox. After that it's cached by the browser.
 - **Pyodide is lazy-loaded** — the WASM bundle only starts downloading when you click "Try it" or press `T`. First load of the app is fast.
 - **Spaced repetition** — when you answer a question wrong, it's spliced back into the question array 2–4 positions ahead, so you'll see it again soon in the same session.
+- **Answer shuffling** — each time a quiz starts, the four MC options for every question are randomly shuffled (fill-in-the-blank questions are unaffected). The `correct` index is updated to track the answer's new position, so all downstream logic (grading, keyboard shortcuts, highlighting) works unchanged.
 - **Daily question seeding** — uses a simple LCG (Linear Congruential Generator) seeded from today's date string. Same question for everyone on the same day.
 - **Keyboard shortcuts** use a two-effect ref pattern to avoid stale closures: one effect (no deps) refreshes `kbHandlerRef.current` every render; a second effect (empty deps) registers a stable `document.addEventListener` wrapper once.
 - **Level-up detection** uses an `xpHydrated` flag so the modal doesn't fire on initial `localStorage` load — only on genuine XP gains during a session.
