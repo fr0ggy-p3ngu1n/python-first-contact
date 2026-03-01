@@ -87,15 +87,15 @@
         font-size="24" fill="#4899aa">XP, levels, achievements &amp; a live in-browser Python sandbox</text>
 
   <!-- Pills -->
-  <!-- 25 Questions -->
-  <rect x="102" y="428" width="178" height="42" rx="21" fill="#0e2535" stroke="#1a4260" stroke-width="1.5"/>
-  <text x="191" y="454" font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
-        font-size="17" font-weight="700" fill="#00ffe8" text-anchor="middle">25 Questions</text>
+  <!-- 200 Questions -->
+  <rect x="102" y="428" width="192" height="42" rx="21" fill="#0e2535" stroke="#1a4260" stroke-width="1.5"/>
+  <text x="198" y="454" font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+        font-size="17" font-weight="700" fill="#00ffe8" text-anchor="middle">200 Questions</text>
 
-  <!-- 4 Play Modes -->
-  <rect x="293" y="428" width="170" height="42" rx="21" fill="#0e2535" stroke="#1a4260" stroke-width="1.5"/>
-  <text x="378" y="454" font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
-        font-size="17" font-weight="700" fill="#00ff8c" text-anchor="middle">4 Play Modes</text>
+  <!-- 6 Play Modes -->
+  <rect x="307" y="428" width="170" height="42" rx="21" fill="#0e2535" stroke="#1a4260" stroke-width="1.5"/>
+  <text x="392" y="454" font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+        font-size="17" font-weight="700" fill="#00ff8c" text-anchor="middle">6 Play Modes</text>
 
   <!-- Live Sandbox -->
   <rect x="476" y="428" width="160" height="42" rx="21" fill="#0e2535" stroke="#1a4260" stroke-width="1.5"/>
