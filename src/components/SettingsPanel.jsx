@@ -36,7 +36,7 @@ export function SettingsPanel({ settings, onChange, callsign, onCallsignSave, on
         </div>
 
         {/* Timer */}
-        <div style={{ marginBottom: 18 }}>
+        <div style={{ marginBottom: 24 }}>
           <div style={{ fontFamily: "'Fira Sans',sans-serif", fontSize: 12, fontWeight: 600, color: D.comment, marginBottom: 10, textTransform: "uppercase", letterSpacing: 1 }}>Timer Duration (Timed Mode)</div>
           <div style={{ display: "flex", gap: 8 }}>
             {[15, 30, 45, 60].map(t => (
@@ -48,19 +48,6 @@ export function SettingsPanel({ settings, onChange, callsign, onCallsignSave, on
           </div>
         </div>
 
-        {/* Question count */}
-        <div style={{ marginBottom: 24 }}>
-          <div style={{ fontFamily: "'Fira Sans',sans-serif", fontSize: 12, fontWeight: 600, color: D.comment, marginBottom: 10, textTransform: "uppercase", letterSpacing: 1 }}>Questions per Session</div>
-          <div style={{ display: "flex", gap: 8 }}>
-            {[5, 10, 15, 20, null].map(n => (
-              <button key={n ?? "all"} onClick={() => onChange({ ...settings, questionCount: n })}
-                style={{ flex: 1, padding: "10px 0", borderRadius: 8, border: `1.5px solid ${settings.questionCount === n ? D.cyan : D.currentLine}`, background: settings.questionCount === n ? `${D.cyan}20` : D.bgDark, color: settings.questionCount === n ? D.cyan : D.comment, fontFamily: "'Fira Code',monospace", fontSize: 13, fontWeight: 700, cursor: "pointer", transition: "all 0.2s" }}>
-                {n ?? "All"}
-              </button>
-            ))}
-          </div>
-          <div style={{ fontFamily: "'Fira Sans',sans-serif", fontSize: 11, color: D.comment, marginTop: 5 }}>Picks a random subset from the chapter. "All" uses every question.</div>
-        </div>
 
         <button onClick={onClose}
           style={{ width: "100%", padding: "12px", borderRadius: 8, border: "none", background: `linear-gradient(135deg,${D.purple},${D.pink})`, color: "#fff", fontFamily: "'Fira Sans',sans-serif", fontSize: 14, fontWeight: 700, cursor: "pointer" }}>

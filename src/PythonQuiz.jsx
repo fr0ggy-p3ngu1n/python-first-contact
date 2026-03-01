@@ -466,6 +466,17 @@ export default function PythonQuiz() {
             ))}
           </div>
 
+          {/* Question count selector */}
+          <div style={{ fontFamily: "'Fira Sans',sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: D.comment, marginBottom: 8 }}>Questions per Session</div>
+          <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
+            {[5, 10, 15, 20, null].map(n => (
+              <button key={n ?? "all"} onClick={() => setSettings(s => ({ ...s, questionCount: n }))}
+                style={{ flex: 1, padding: "10px 0", borderRadius: 10, border: `1.5px solid ${settings.questionCount === n ? D.cyan : D.currentLine}`, background: settings.questionCount === n ? `${D.cyan}20` : D.currentLine, color: settings.questionCount === n ? D.cyan : D.comment, fontFamily: "'Fira Code',monospace", fontSize: 13, fontWeight: 700, cursor: "pointer", transition: "all 0.2s" }}>
+                {n ?? "All"}
+              </button>
+            ))}
+          </div>
+
           {/* Chapter selector */}
           <div style={{ fontFamily: "'Fira Sans',sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: D.comment, marginBottom: 8 }}>Chapter</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
