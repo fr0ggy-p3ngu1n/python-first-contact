@@ -213,7 +213,13 @@ export default function PythonQuiz() {
     const elapsed = Math.round((Date.now() - qStartTime) / 1000);
     let correct;
     if (isFillBlank) {
-      correct = fillInput.trim().toLowerCase() === q.fillBlankAnswer.trim().toLowerCase();
+      const raw     = fillInput.trim().toLowerCase();
+      const expected = q.fillBlankAnswer.trim().toLowerCase();
+      // Accept numeric equivalents: "22" matches "22.0", "24" matches "24.0", etc.
+      const numRaw  = Number(raw);
+      const numExp  = Number(expected);
+      correct = raw === expected ||
+                (!isNaN(numRaw) && !isNaN(numExp) && numRaw === numExp);
       setFillCorrect(correct);
     } else {
       const sel = forceIdx !== null ? forceIdx : selected;
@@ -640,7 +646,7 @@ export default function PythonQuiz() {
                     <div style={{ fontFamily: "'Fira Sans',sans-serif", fontSize: 12, color: D.comment, marginBottom: 8 }}>Type the exact output:</div>
                     <input ref={fillRef} value={fillInput} onChange={e => setFillInput(e.target.value)}
                       onKeyDown={e => { if (e.key === "Enter") handleConfirm(); }}
-                      placeholder="e.g. 24.0"
+                      placeholder="Type the exact Python output"
                       style={{ width: "100%", background: D.bgDark, border: `1.5px solid ${D.currentLine}`, borderRadius: 8, padding: "12px 14px", fontFamily: "'Fira Code',monospace", fontSize: 16, color: D.fg, outline: "none", boxSizing: "border-box", caretColor: D.purple }}/>
                   </div>
                 )}
