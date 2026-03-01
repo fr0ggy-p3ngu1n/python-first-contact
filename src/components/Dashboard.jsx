@@ -114,6 +114,25 @@ export function Dashboard({ history, onClear, onBack, isMobile, earned = new Set
         </div>
       )}
 
+      {Object.keys(topicMisses).length > 0 && (
+        <div style={{ background: D.bg, border: `1px solid ${D.currentLine}`, borderRadius: 10, padding: "16px 18px", marginBottom: 16 }}>
+          <div style={{ fontFamily: "'Fira Sans',sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: D.comment, marginBottom: 14 }}>Topic Miss History</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {Object.entries(topicMisses).sort((a, b) => b[1] - a[1]).slice(0, 12).map(([topic, count], i) => {
+              const badgeColor = count >= 3 ? D.red : count === 2 ? D.yellow : D.green;
+              return (
+                <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                  <span style={{ fontFamily: "'Fira Sans',sans-serif", fontSize: 13, color: D.fg, flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{topic}</span>
+                  <span style={{ fontFamily: "'Fira Code',monospace", fontSize: 11, fontWeight: 700, color: badgeColor, background: `${badgeColor}18`, border: `1px solid ${badgeColor}44`, borderRadius: 5, padding: "3px 8px", whiteSpace: "nowrap", flexShrink: 0 }}>
+                    {count} ✗
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       <div style={{ background: D.bg, border: `1px solid ${D.currentLine}`, borderRadius: 10, padding: "16px 18px", marginBottom: 16 }}>
         <div style={{ fontFamily: "'Fira Sans',sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase", color: D.comment, marginBottom: 14 }}>
           Achievements <span style={{ color: D.purple, fontFamily: "'Fira Code',monospace" }}>{earned.size}/{ACHIEVEMENTS.length}</span>

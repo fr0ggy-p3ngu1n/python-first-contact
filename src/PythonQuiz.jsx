@@ -34,6 +34,7 @@ import { KeyboardModal }      from "./components/KeyboardModal.jsx";
 import { syntaxHighlight }  from "./utils/syntaxHighlight.jsx";
 import { getDailyQuestion } from "./utils/dailyQuestion.js";
 import { CSS }              from "./styles.js";
+import { useBookmarks }     from "./hooks/useBookmarks.js";
 
 /* ─── Speed run PB helpers ──────────────────────────────────────────────── */
 function fmtTime(s) {
@@ -52,10 +53,31 @@ function setSpeedPB(chapterLabel, seconds) {
   } catch {}
 }
 
+/* ─── Mastery ring SVG ───────────────────────────────────────────────────── */
+function MasteryRing({ pct, color }) {
+  const r = 15, circ = 2 * Math.PI * r;
+  return (
+    <svg width={36} height={36} style={{ transform: "rotate(-90deg)", flexShrink: 0 }}>
+      <circle cx={18} cy={18} r={r} fill="none" stroke={`${color}25`} strokeWidth={3}/>
+      <circle cx={18} cy={18} r={r} fill="none" stroke={color} strokeWidth={3}
+        strokeDasharray={`${pct / 100 * circ} ${circ}`} strokeLinecap="round"/>
+      <text x={18} y={18} textAnchor="middle" dominantBaseline="central"
+        style={{ transform: "rotate(90deg)", transformOrigin: "18px 18px",
+                 fontFamily: "'Fira Code',monospace", fontSize: 9, fontWeight: 700, fill: color }}>
+        {pct}%
+      </text>
+    </svg>
+  );
+}
+
 /* ─── MAIN APP ──────────────────────────────────────────────────────────── */
 export default function PythonQuiz() {
   const isMobile  = useIsMobile();
-  const [settings, setSettings] = useState({ sound: true, timerDuration: 30, questionCount: null });
+  const [settings, setSettings] = useState(() => {
+    try { return { sound: true, timerDuration: 30, questionCount: null, ...JSON.parse(localStorage.getItem("pyquiz-settings") || "{}") }; }
+    catch { return { sound: true, timerDuration: 30, questionCount: null }; }
+  });
+  useEffect(() => { localStorage.setItem("pyquiz-settings", JSON.stringify(settings)); }, [settings]);
   const sounds    = useSounds(settings.sound);
   const { history, save: saveSession, clear: clearHistory } = useSessionHistory();
   const { loading: pyLoading, error: pyError, runCode, load: loadPyodide } = usePyodide();
@@ -64,9 +86,12 @@ export default function PythonQuiz() {
   const pomodoro   = usePomodoro();
   const { callsign, save: saveCallsign } = useCallsign();
   const achieve    = useAchievements();
+  const { bookmarks, toggle: toggleBookmark } = useBookmarks();
 
   const [isDailyMode, setIsDailyMode] = useState(false);
   const [sessionXP,   setSessionXP]   = useState(0);
+  const [lives,        setLives]       = useState(3);
+  const [sessionLog,   setSessionLog]  = useState([]);
 
   // ── Global overlay state ──
   const [showSettings,     setShowSettings]     = useState(false);
@@ -142,9 +167,16 @@ export default function PythonQuiz() {
   const q           = questions[current];
   const isFillBlank = !!q?.fillBlankAnswer;
   const accentColor = CHAPTERS[chapterIdx]?.accent ?? D.purple;
-  const isTimed     = mode === "timed";
+  const isExam      = mode === "exam";
+  const isSurvival  = mode === "survival";
+  const isTimed     = mode === "timed" || isExam;
   const isSpeedRun  = mode === "speed";
   const isReview    = q && retriedIds.has(q.id);
+
+  // Survival: end game when lives hit 0
+  useEffect(() => {
+    if (isSurvival && lives === 0 && view === "quiz") setView("gameover");
+  }, [lives, isSurvival, view]);
 
   // ── Timer (timed mode) ──
   const timerActive = isTimed && !confirmed && view === "quiz";
@@ -210,6 +242,7 @@ export default function PythonQuiz() {
     setScore(0); setStreak(0); setBestStreak(0);
     setMissed([]); setConfidenceData([]); setTimePerQ([]);
     setRetriedIds(new Set());
+    setLives(3); setSessionLog([]);
     setQStartTime(Date.now());
     quizStartTimeRef.current = Date.now();
     setSpeedElapsed(0);
@@ -229,6 +262,16 @@ export default function PythonQuiz() {
     history.forEach(s => (s.missed || []).forEach(t => topics.add(t)));
     return ALL_QUESTIONS.filter(q => topics.has(q.topic));
   })();
+
+  const bookmarkedQs = ALL_QUESTIONS.filter(q => bookmarks.has(q.id));
+
+  const chapterMastery = (label) => {
+    const sessions = history.filter(s => s.chapter === label);
+    if (!sessions.length) return null;
+    const tot = sessions.reduce((a, s) => a + (s.total || 0), 0);
+    const cor = sessions.reduce((a, s) => a + (s.score || 0), 0);
+    return Math.round(cor / tot * 100);
+  };
 
   // ── Confirm answer ──
   const handleConfirm = (forceIdx = null) => {
@@ -253,6 +296,7 @@ export default function PythonQuiz() {
     }
     setConfirmed(true);
     setTimePerQ(t => [...t, elapsed]);
+    setSessionLog(l => [...l, { q, selected: isFillBlank ? null : (forceIdx !== null ? forceIdx : selected), fillInput: isFillBlank ? fillInput : null, isCorrect: correct, elapsed }]);
     if (correct) {
       sounds.correct();
       setScore(s => s + 1);
@@ -264,10 +308,11 @@ export default function PythonQuiz() {
       }
       // Streak achievement
       if (ns >= 10) achieve.award("on_fire");
-      // XP
+      // XP — streak bonus scales with streak length
+      const streakBonus = ns >= 10 ? 15 : ns >= 8 ? 12 : ns >= 5 ? 8 : ns >= 3 ? 5 : 0;
       let xpGain = 10;
       if (!hintPenalized) xpGain += 5;
-      if (ns >= 3)        xpGain += 5;
+      xpGain += streakBonus;
       if (elapsed < 8)    xpGain += 5;
       if (isDailyMode)    xpGain += 20;
       addXP(xpGain);
@@ -281,13 +326,22 @@ export default function PythonQuiz() {
       setShake(true); setTimeout(() => setShake(false), 600);
       setStreak(0);
       setMissed(m => [...m, q.topic]);
-      if (!retriedIds.has(q.id)) {
+      if (isSurvival) {
+        setLives(l => l - 1);
+      } else if (!isExam && !retriedIds.has(q.id)) {
         const insertAt = Math.min(current + 2 + Math.floor(Math.random() * 3), questions.length);
         setQuestions(qs => { const next = [...qs]; next.splice(insertAt, 0, q); return next; });
         setRetriedIds(s => new Set([...s, q.id]));
         showToast("↩ Coming back for review!", D.cyan);
       }
     }
+  };
+
+  // ── Skip question (moves current to end of queue) ──
+  const handleSkip = () => {
+    setQuestions(qs => { const n = [...qs]; n.push(n.splice(current, 1)[0]); return n; });
+    setSelected(null); setFillInput(""); setShowHint(false);
+    setHintPenalized(false); setQStartTime(Date.now());
   };
 
   const handleConfidence = (c) => {
@@ -436,7 +490,7 @@ export default function PythonQuiz() {
           </div>
           <div style={{ fontFamily: "'Fira Sans',sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 4, textTransform: "uppercase", color: D.comment, marginBottom: 6 }}>Gravemind Gallery Presents</div>
           <h1 style={{ fontFamily: "'Fira Sans',sans-serif", fontSize: isMobile ? 24 : 32, fontWeight: 800, color: D.fg, margin: "0 0 6px", letterSpacing: -0.5 }}>Python: First Contact</h1>
-          <p style={{ fontFamily: "'Fira Code',monospace", color: D.comment, fontSize: 12, margin: 0, lineHeight: 1.6 }}>160 questions · Chapters 1–8 · Shuffled each round</p>
+          <p style={{ fontFamily: "'Fira Code',monospace", color: D.comment, fontSize: 12, margin: 0, lineHeight: 1.6 }}>180 questions · Chapters 1–8 · Shuffled each round</p>
         </div>
 
         <div style={{ width: "100%", maxWidth: 520, animation: "slideUp 0.4s ease-out 0.06s both" }}>
@@ -450,12 +504,14 @@ export default function PythonQuiz() {
 
           {/* Mode selector */}
           <div style={{ fontFamily: "'Fira Sans',sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 3, textTransform: "uppercase", color: D.comment, marginBottom: 8 }}>Mode</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 8, marginBottom: 20 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 20 }}>
             {[
               { key: "standard",  icon: "📝", label: "Standard",  sub: "No time limit" },
               { key: "timed",     icon: "⏱",  label: "Timed",     sub: `${settings.timerDuration}s / Q` },
               { key: "flashcard", icon: "🃏", label: "Flashcard", sub: "Flip to reveal" },
               { key: "speed",     icon: "⚡", label: "Speed Run",  sub: "Beat your best" },
+              { key: "exam",      icon: "📋", label: "Exam Sim",   sub: "No hints · Timed" },
+              { key: "survival",  icon: "❤️", label: "Survival",   sub: "3 lives · No retry" },
             ].map(({ key, icon, label, sub }) => (
               <button key={key} onClick={() => setMode(key)}
                 style={{ background: mode === key ? `${D.purple}20` : D.currentLine, border: `1.5px solid ${mode === key ? D.purple : D.currentLine}`, borderRadius: 10, padding: "10px 4px", cursor: "pointer", textAlign: "center", transition: "all 0.2s" }}>
@@ -487,8 +543,8 @@ export default function PythonQuiz() {
                   <div style={{ fontFamily: "'Fira Sans',sans-serif", fontSize: isMobile ? 13 : 14, fontWeight: 700, color: D.fg, marginBottom: 1 }}>{ch.label}</div>
                   <div style={{ fontFamily: "'Fira Code',monospace", fontSize: 10, color: D.comment }}>{ch.sub}</div>
                 </div>
-                <div style={{ fontFamily: "'Fira Code',monospace", fontSize: 11, color: D.comment, whiteSpace: "nowrap", marginLeft: 12 }}>
-                  {ch.ids ? `${ch.ids.length} Qs` : `${ALL_QUESTIONS.length} Qs`} →
+                <div style={{ marginLeft: 12, flexShrink: 0 }}>
+                  {(() => { const m = chapterMastery(ch.label); return m !== null ? <MasteryRing pct={m} color={ch.accent}/> : <span style={{ fontFamily: "'Fira Code',monospace", fontSize: 11, color: D.comment, whiteSpace: "nowrap" }}>{ch.ids ? `${ch.ids.length} Qs` : `${ALL_QUESTIONS.length} Qs`} →</span>; })()}
                 </div>
               </button>
             ))}
@@ -503,6 +559,19 @@ export default function PythonQuiz() {
               </div>
               <div style={{ fontFamily: "'Fira Code',monospace", fontSize: 11, color: D.comment, whiteSpace: "nowrap", marginLeft: 12 }}>
                 {missedDrillQs.length} Qs →
+              </div>
+            </button>
+          )}
+
+          {bookmarkedQs.length > 0 && (
+            <button onClick={() => startQuiz(0, bookmarkedQs, mode)} className="chapter-btn"
+              style={{ marginTop: 7, width: "100%", background: `${D.yellow}10`, border: `1.5px solid ${D.yellow}44`, borderRadius: 10, padding: isMobile ? "13px 15px" : "14px 18px", textAlign: "left", cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", minHeight: 56, "--accent": D.yellow }}>
+              <div>
+                <div style={{ fontFamily: "'Fira Sans',sans-serif", fontSize: isMobile ? 13 : 14, fontWeight: 700, color: D.yellow, marginBottom: 1 }}>★ Starred</div>
+                <div style={{ fontFamily: "'Fira Code',monospace", fontSize: 10, color: D.comment }}>Your bookmarked questions</div>
+              </div>
+              <div style={{ fontFamily: "'Fira Code',monospace", fontSize: 11, color: D.comment, whiteSpace: "nowrap", marginLeft: 12 }}>
+                {bookmarkedQs.length} Qs →
               </div>
             </button>
           )}
@@ -551,6 +620,32 @@ export default function PythonQuiz() {
     </>
   );
 
+  /* ── GAME OVER (survival) ───────────────────────────────────────────── */
+  if (view === "gameover") return (
+    <>
+      <style>{CSS}</style>
+      {overlays}
+      <div style={{ minHeight: "100vh", background: D.bgDark, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24 }}>
+        <div style={{ textAlign: "center", maxWidth: 400 }}>
+          <div style={{ fontSize: 72, marginBottom: 16, animation: "popIn 0.5s ease" }}>💀</div>
+          <div style={{ fontFamily: "'Fira Sans',sans-serif", fontSize: 28, fontWeight: 800, color: D.red, marginBottom: 8, letterSpacing: -0.5 }}>Game Over</div>
+          <div style={{ fontFamily: "'Fira Code',monospace", fontSize: 14, color: D.comment, marginBottom: 4 }}>You survived <span style={{ color: D.fg, fontWeight: 700 }}>{score}</span> correct answer{score !== 1 ? "s" : ""}</div>
+          <div style={{ fontFamily: "'Fira Code',monospace", fontSize: 13, color: D.comment, marginBottom: 32 }}>out of <span style={{ color: D.fg }}>{sessionLog.length}</span> question{sessionLog.length !== 1 ? "s" : ""} attempted</div>
+          <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+            <button onClick={() => setView("done")}
+              style={{ background: `linear-gradient(135deg,${D.red},${D.pink})`, color: "#fff", border: "none", borderRadius: 8, padding: "14px 28px", fontFamily: "'Fira Sans',sans-serif", fontSize: 15, fontWeight: 700, cursor: "pointer", minHeight: 48 }}>
+              See Results →
+            </button>
+            <button onClick={() => setView("menu")}
+              style={{ background: "none", border: `1.5px solid ${D.currentLine}`, borderRadius: 8, padding: "14px 24px", fontFamily: "'Fira Sans',sans-serif", fontSize: 15, fontWeight: 700, color: D.comment, cursor: "pointer", minHeight: 48 }}>
+              Menu
+            </button>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+
   /* ── DONE ──────────────────────────────────────────────────────────── */
   if (view === "done") {
     const finalScore   = score;
@@ -573,6 +668,7 @@ export default function PythonQuiz() {
               confidenceData={confidenceData} timePerQ={timePerQ}
               chapter={CHAPTERS[chapterIdx].label} isMobile={isMobile}
               xpEarned={sessionXP} speedTime={speedTime} speedPB={speedPB}
+              sessionLog={sessionLog}
               onRetryAll={() => startQuiz(chapterIdx, null, mode)}
               onRetryMissed={() => {
                 const missedQs = ALL_QUESTIONS.filter(q => uniqueMissed.includes(q.topic));
@@ -612,6 +708,16 @@ export default function PythonQuiz() {
               </div>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 8 : 14, flexShrink: 0 }}>
+              {isSurvival && (
+                <div style={{ fontFamily: "'Fira Code',monospace", fontSize: isMobile ? 13 : 15, letterSpacing: 1 }}>
+                  {"❤️".repeat(lives)}{"🖤".repeat(3 - lives)}
+                </div>
+              )}
+              {isExam && (
+                <div style={{ background: `${D.purple}20`, border: `1px solid ${D.purple}44`, borderRadius: 6, padding: isMobile ? "3px 8px" : "4px 10px", fontFamily: "'Fira Code',monospace", fontSize: isMobile ? 10 : 11, color: D.purple, fontWeight: 700, whiteSpace: "nowrap" }}>
+                  📋 EXAM
+                </div>
+              )}
               {streak >= 2 && (
                 <div style={{ background: `${D.orange}20`, border: `1px solid ${D.orange}44`, borderRadius: 6, padding: isMobile ? "3px 8px" : "4px 12px", fontFamily: "'Fira Code',monospace", fontSize: isMobile ? 11 : 12, color: D.orange, fontWeight: 600, animation: "popIn 0.3s ease", whiteSpace: "nowrap" }}>
                   {streak >= 5 ? "🔥🔥🔥" : streak >= 3 ? "🔥🔥" : "🔥"} {streak}x
@@ -657,6 +763,11 @@ export default function PythonQuiz() {
                       <span style={{ fontFamily: "'Fira Code',monospace", fontSize: 11, fontWeight: 600, color: D.cyan }}>↩ Review</span>
                     </div>
                   )}
+                  <button onClick={() => toggleBookmark(q.id)}
+                    title={bookmarks.has(q.id) ? "Remove bookmark" : "Bookmark this question"}
+                    style={{ marginLeft: "auto", background: "none", border: "none", cursor: "pointer", fontSize: isMobile ? 16 : 18, lineHeight: 1, padding: "2px 4px", color: bookmarks.has(q.id) ? D.yellow : D.comment, transition: "color 0.2s", WebkitTapHighlightColor: "transparent" }}>
+                    {bookmarks.has(q.id) ? "★" : "☆"}
+                  </button>
                 </div>
 
                 <h2 style={{ fontFamily: "'Fira Sans',sans-serif", fontSize: isMobile ? 15 : 17, fontWeight: 700, color: D.fg, margin: "0 0 14px", lineHeight: 1.45 }}>{q.question}</h2>
@@ -755,10 +866,16 @@ export default function PythonQuiz() {
             <div style={{ display: "flex", gap: 9, marginBottom: 12 }}>
               {!confirmed ? (
                 <>
-                  {!showHint && (
+                  {!isExam && !showHint && (
                     <button onClick={() => { sounds.hint(); setShowHint(true); setHintPenalized(true); sessionHintUsedRef.current = true; }}
                       style={{ padding: isMobile ? "13px 12px" : "12px 14px", borderRadius: 8, border: `1.5px solid ${D.yellow}44`, background: `${D.yellow}10`, color: D.yellow, fontFamily: "'Fira Code',monospace", fontSize: 12, fontWeight: 600, cursor: "pointer", minHeight: 48, minWidth: isMobile ? 68 : 76, WebkitTapHighlightColor: "transparent", transition: "all 0.2s" }}>
                       💡 Hint
+                    </button>
+                  )}
+                  {!isExam && (
+                    <button onClick={handleSkip}
+                      style={{ padding: isMobile ? "13px 10px" : "12px 12px", borderRadius: 8, border: `1.5px solid ${D.currentLine}`, background: D.bg, color: D.comment, fontFamily: "'Fira Code',monospace", fontSize: 12, fontWeight: 600, cursor: "pointer", minHeight: 48, minWidth: isMobile ? 56 : 64, WebkitTapHighlightColor: "transparent", transition: "all 0.2s" }}>
+                      ⏭ Skip
                     </button>
                   )}
                   <button onClick={() => handleConfirm()} disabled={!isFillBlank && selected === null}

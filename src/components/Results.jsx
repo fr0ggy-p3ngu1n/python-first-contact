@@ -10,7 +10,7 @@ function fmtTime(s) {
   return m > 0 ? `${m}m ${sec.toString().padStart(2, "0")}s` : `${s}s`;
 }
 
-export function Results({ score, total, pct, bestStreak, missed, confidenceData, timePerQ, chapter, isMobile, onRetryAll, onRetryMissed, xpEarned = 0, speedTime = null, speedPB = null }) {
+export function Results({ score, total, pct, bestStreak, missed, confidenceData, timePerQ, chapter, isMobile, onRetryAll, onRetryMissed, xpEarned = 0, speedTime = null, speedPB = null, sessionLog = [] }) {
   const tier = pct >= 90 ? { label: "Exam Ready", color: D.cyan } : pct >= 70 ? { label: "Almost There", color: D.green } : pct >= 50 ? { label: "Keep Studying", color: D.yellow } : { label: "More Practice Needed", color: D.red };
 
   useEffect(() => {
@@ -34,7 +34,7 @@ export function Results({ score, total, pct, bestStreak, missed, confidenceData,
   const avgTime      = timePerQ.length > 0 ? Math.round(timePerQ.reduce((a, b) => a + b, 0) / timePerQ.length) : null;
 
   const [tab, setTab] = useState("overview");
-  const tabs = [["overview", "Overview"], ["topics", "By Topic"], ["share", "Share"]];
+  const tabs = [["overview", "Overview"], ["topics", "By Topic"], ["share", "Share"], ...(sessionLog.length > 0 ? [["review", "Review"]] : [])];
 
   return (
     <div style={{ maxWidth: 580, margin: "0 auto", padding: isMobile ? "28px 0" : "40px 24px" }}>
@@ -120,6 +120,46 @@ export function Results({ score, total, pct, bestStreak, missed, confidenceData,
 
       {tab === "share" && (
         <ShareCard score={score} total={total} pct={pct} bestStreak={bestStreak} chapter={chapter} missed={missed} isMobile={isMobile}/>
+      )}
+
+      {tab === "review" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          {sessionLog.map((entry, i) => {
+            const { q, isCorrect, elapsed } = entry;
+            const isFib = !!q.fillBlankAnswer;
+            const userAnswer = isFib ? entry.fillInput : (entry.selected !== null ? q.options?.[entry.selected] : null);
+            const correctAnswer = isFib ? q.fillBlankAnswer : q.options?.[q.correct];
+            return (
+              <div key={i} style={{ background: D.bg, border: `1px solid ${isCorrect ? D.green + "44" : D.red + "44"}`, borderRadius: 10, padding: "14px 16px", borderLeft: `3px solid ${isCorrect ? D.green : D.red}` }}>
+                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 8 }}>
+                  <div style={{ display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap", flex: 1 }}>
+                    <span style={{ fontFamily: "'Fira Code',monospace", fontSize: 10, color: isCorrect ? D.green : D.red, fontWeight: 700 }}>{isCorrect ? "✓" : "✗"}</span>
+                    <span style={{ fontFamily: "'Fira Code',monospace", fontSize: 10, background: `${D.purple}20`, border: `1px solid ${D.purple}33`, borderRadius: 4, padding: "2px 6px", color: D.purple }}>{q.topic}</span>
+                    {isFib && <span style={{ fontFamily: "'Fira Code',monospace", fontSize: 10, background: `${D.pink}18`, border: `1px solid ${D.pink}33`, borderRadius: 4, padding: "2px 6px", color: D.pink }}>✏ FIB</span>}
+                  </div>
+                  <span style={{ fontFamily: "'Fira Code',monospace", fontSize: 10, color: D.comment, whiteSpace: "nowrap", flexShrink: 0 }}>{elapsed}s</span>
+                </div>
+                <div style={{ fontFamily: "'Fira Sans',sans-serif", fontSize: 13, color: D.fg, lineHeight: 1.5, marginBottom: 10 }}>{q.question}</div>
+                {isCorrect ? (
+                  <div style={{ fontFamily: "'Fira Code',monospace", fontSize: 12, color: D.green, background: `${D.green}14`, border: `1px solid ${D.green}33`, borderRadius: 6, padding: "6px 10px" }}>
+                    ✓ {correctAnswer}
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    {userAnswer != null && (
+                      <div style={{ fontFamily: "'Fira Code',monospace", fontSize: 12, color: D.red, background: `${D.red}14`, border: `1px solid ${D.red}33`, borderRadius: 6, padding: "6px 10px" }}>
+                        ✗ {userAnswer}
+                      </div>
+                    )}
+                    <div style={{ fontFamily: "'Fira Code',monospace", fontSize: 12, color: D.green, background: `${D.green}14`, border: `1px solid ${D.green}33`, borderRadius: 6, padding: "6px 10px" }}>
+                      ✓ {correctAnswer}
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
       )}
 
       <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap", marginTop: 8 }}>
