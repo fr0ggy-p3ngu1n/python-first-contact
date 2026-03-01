@@ -2,7 +2,7 @@
 
 > An alien-themed, interactive Python midterm review quiz — built as a study tool for a friend.
 
-**Live demo:** _add Vercel URL here after first deploy_
+**Live demo:** https://python-first-contact.vercel.app
 
 ---
 
