@@ -240,8 +240,7 @@ export default function PythonQuiz() {
       if (sel === null) return;
       setSelected(sel);
       correct = sel === q.correct;
-      // DEBUG — remove after issue is diagnosed
-      console.log(`[quiz] Q${q.id} graded | sel=${sel} q.correct=${q.correct} correct=${correct} | options:`, q.options);
+
     }
     setConfirmed(true);
     setTimePerQ(t => [...t, elapsed]);
@@ -742,7 +741,7 @@ export default function PythonQuiz() {
                       💡 Hint
                     </button>
                   )}
-                  <button onClick={handleConfirm} disabled={!isFillBlank && selected === null}
+                  <button onClick={() => handleConfirm()} disabled={!isFillBlank && selected === null}
                     style={{ flex: 1, padding: isMobile ? "13px" : "12px", borderRadius: 8, border: "none", background: (!isFillBlank && selected === null) ? D.currentLine : `linear-gradient(135deg,${D.purple},${D.pink})`, color: (!isFillBlank && selected === null) ? D.comment : "#fff", fontFamily: "'Fira Sans',sans-serif", fontSize: 15, fontWeight: 700, cursor: (!isFillBlank && selected === null) ? "not-allowed" : "pointer", minHeight: 48, transition: "all 0.2s", WebkitTapHighlightColor: "transparent" }}>
                     Check Answer
                   </button>
