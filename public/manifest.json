@@ -1,0 +1,12 @@
+{
+  "name": "Python: First Contact",
+  "short_name": "First Contact",
+  "description": "An alien-themed interactive Python quiz — 25 questions, 5 chapters, full gamification.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#081c2c",
+  "theme_color": "#00d4c0",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
