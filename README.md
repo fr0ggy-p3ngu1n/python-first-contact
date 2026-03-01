@@ -8,7 +8,7 @@
 
 ## What it is
 
-A single-page React app that turns Python revision into a game. 180 questions across eight chapters, six play modes, a live Python sandbox powered by WebAssembly, and a full gamification layer — XP, levels, streaks, achievements, a daily challenge, and confetti on a perfect score.
+A single-page React app that turns Python revision into a game. 200 questions across eight chapters, six play modes, a live Python sandbox powered by WebAssembly, and a full gamification layer — XP, levels, streaks, achievements, a daily challenge, and confetti on a perfect score.
 
 The alien/teal aesthetic is intentional — it belongs to the person it was built for.
 
@@ -17,7 +17,7 @@ The alien/teal aesthetic is intentional — it belongs to the person it was buil
 ## Features
 
 ### Core quiz
-- **180 questions** spanning Chapters 1–8 of a Python fundamentals course
+- **200 questions** spanning Chapters 1–8 of a Python fundamentals course
 - **Multiple-choice and fill-in-the-blank** question types
 - **Syntax-highlighted code blocks** with a custom Dracula-inspired tokenizer
 - **Live Python sandbox** (`area51.py`) powered by [Pyodide](https://pyodide.org) (Python in WebAssembly — no server, runs entirely in the browser) — lazy-loaded only when you open it
@@ -112,14 +112,14 @@ Streak bonuses are tiered — only the highest applicable bonus applies.
 
 | # | Title | Topics | Questions |
 |---|---|---|---|
-| 1 | Basics | Syntax errors, pseudocode, escape characters, `print()`, `int()`, math, user input, f-strings, type conversion, floor division, modulo, `round()`, `type()`, augmented assignment | 22 |
-| 2 | Logic | Booleans, logical operators, short-circuit, comparison operators, chained comparisons, truthiness, `any()`, `all()`, boolean arithmetic | 23 |
-| 3 | If Statements | Conditions, `elif`, indentation, nested if, ternary expressions, `pass`, membership, falsy values, input validation | 22 |
-| 4 | Loops | `for`, `while`, `range()`, augmented assignment, accumulator, `break`, `continue`, `enumerate()`, `reversed()`, `zip()`, `for/else` | 23 |
-| 5 | Lists & Functions | Lists, functions, scope, walrus operator, default parameters, `append()`, `extend()`, `sorted()`, slicing, `*args`, `max()`/`min()`, list comprehension | 23 |
-| 6 | Lists Deep Dive | Indexing, negative indexes, tuples, `range()` → list, `*` repetition, `IndexError`, `len()`, `pop()`, `remove()`, 2D lists, `index()`, unpacking, `del` | 22 |
-| 7 | Strings | Slicing, `split()`, `strip()`, `replace()`, `join()`, `upper()`/`lower()`, `isdigit()`, `isalpha()`, `find()`, f-strings, immutability, triple quotes | 23 |
-| 8 | OOP | Classes, encapsulation, `__init__`, `__str__`, `@property`, inheritance, `super()`, method overriding, `isinstance()`, class variables, duck typing | 22 |
+| 1 | Basics | Syntax errors, pseudocode, escape characters, `print()`, `int()`, `float()`, math, `**`, user input, f-strings, type conversion, floor division, modulo, `round()`, `type()`, augmented assignment | 25 |
+| 2 | Logic | Booleans, logical operators, short-circuit, `in`/`not in`, `or` returns operand, comparison operators, chained comparisons, truthiness, `any()`, `all()`, boolean arithmetic | 25 |
+| 3 | If Statements | Conditions, `elif`, indentation, nested if, ternary expressions, `pass`, membership, `not in`, `is None`, falsy values, `or` conditions, input validation | 25 |
+| 4 | Loops | `for`, `while`, `range()`, augmented assignment, accumulator, `break`, `continue`, `enumerate()` with start, `reversed()`, `zip()` length mismatch, `for/else` | 25 |
+| 5 | Lists & Functions | Lists, functions, scope, walrus operator, default parameters, `append()`, `extend()`, `pop()` with index, `sorted()` with key, slicing, `*args`, `max()`/`min()`, list comprehension | 25 |
+| 6 | Lists Deep Dive | Indexing, negative slicing, tuples, packing/unpacking, star unpacking, `range()` → list, `*` repetition, `IndexError`, `len()`, `pop()`, `remove()`, 2D lists, `index()`, `del` | 25 |
+| 7 | Strings | Slicing, `split()`, `strip()`, `replace()`, `join()`, `upper()`/`lower()`, `capitalize()`, `title()`, `find()` vs `index()`, `isdigit()`, `isalpha()`, f-strings, immutability, triple quotes | 25 |
+| 8 | OOP | Classes, encapsulation, `__init__`, `__str__`, `__repr__`, `@property`, `@classmethod`, `@staticmethod`, inheritance, `super()`, method overriding, `isinstance()`, class variables, duck typing | 25 |
 
 ---
 
@@ -201,7 +201,7 @@ python-first-contact/
 │   │   ├── chapters.js      # Chapter definitions + accent colours
 │   │   ├── levels.js        # Level thresholds + getLevel()
 │   │   ├── palette.js       # D colour object
-│   │   └── questions.js     # All 180 questions (MC + fill-in-the-blank)
+│   │   └── questions.js     # All 200 questions (MC + fill-in-the-blank)
 │   ├── hooks/
 │   │   ├── useAchievements.js
 │   │   ├── useBookmarks.js  # Bookmark persistence (localStorage Set)
