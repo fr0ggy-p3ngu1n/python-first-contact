@@ -412,7 +412,7 @@ export default function PythonQuiz() {
           </div>
           <div style={{ fontFamily: "'Fira Sans',sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 4, textTransform: "uppercase", color: D.comment, marginBottom: 6 }}>Xeno Corp Presents</div>
           <h1 style={{ fontFamily: "'Fira Sans',sans-serif", fontSize: isMobile ? 24 : 32, fontWeight: 800, color: D.fg, margin: "0 0 6px", letterSpacing: -0.5 }}>Python: First Contact</h1>
-          <p style={{ fontFamily: "'Fira Code',monospace", color: D.comment, fontSize: 12, margin: 0, lineHeight: 1.6 }}>25 questions · Chapters 1–5 · Shuffled each round</p>
+          <p style={{ fontFamily: "'Fira Code',monospace", color: D.comment, fontSize: 12, margin: 0, lineHeight: 1.6 }}>51 questions · Chapters 1–8 · Shuffled each round</p>
         </div>
 
         <div style={{ width: "100%", maxWidth: 520, animation: "slideUp 0.4s ease-out 0.06s both" }}>
@@ -453,7 +453,7 @@ export default function PythonQuiz() {
                   <div style={{ fontFamily: "'Fira Code',monospace", fontSize: 10, color: D.comment }}>{ch.sub}</div>
                 </div>
                 <div style={{ fontFamily: "'Fira Code',monospace", fontSize: 11, color: D.comment, whiteSpace: "nowrap", marginLeft: 12 }}>
-                  {ch.ids ? `${ch.ids.length} Qs` : "25 Qs"} →
+                  {ch.ids ? `${ch.ids.length} Qs` : "51 Qs"} →
                 </div>
               </button>
             ))}
