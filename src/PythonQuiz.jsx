@@ -160,6 +160,11 @@ export default function PythonQuiz() {
   };
 
   function handleAutoExpire() {
+    // If user already tapped an answer, honour their selection — timer just auto-confirms it
+    if (selected !== null) {
+      handleConfirm();
+      return;
+    }
     setConfirmed(true);
     setStreak(0);
     setMissed(m => [...m, q.topic]);
@@ -174,7 +179,12 @@ export default function PythonQuiz() {
     const qs       = pool || (ch.ids ? ALL_QUESTIONS.filter(q => ch.ids.includes(q.id)) : ALL_QUESTIONS);
     const shuffled = [...qs].sort(() => Math.random() - 0.5).map(qItem => {
       if (qItem.fillBlankAnswer) return qItem;
-      const order = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
+      // Fisher-Yates shuffle — unbiased, guaranteed correct index tracking
+      const order = [0, 1, 2, 3];
+      for (let i = 3; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [order[i], order[j]] = [order[j], order[i]];
+      }
       return { ...qItem, options: order.map(i => qItem.options[i]), correct: order.indexOf(qItem.correct) };
     });
     setIsDailyMode(isDaily);
@@ -690,6 +700,11 @@ export default function PythonQuiz() {
                     <div style={{ fontFamily: "'Fira Code',monospace", fontSize: 11, letterSpacing: 1.5, textTransform: "uppercase", color: isCorrect ? D.green : D.red, marginBottom: 6, fontWeight: 700 }}>
                       {isCorrect ? "✓  Correct" : "✗  Incorrect"}
                     </div>
+                    {!isCorrect && selected !== null && (
+                      <div style={{ fontFamily: "'Fira Sans',sans-serif", fontSize: 12, color: D.red, marginBottom: 8, opacity: 0.8 }}>
+                        You selected: {q.options[selected]}
+                      </div>
+                    )}
                     <div style={{ fontFamily: "'Fira Sans',sans-serif", fontSize: 13, color: D.fg, lineHeight: 1.65 }}>{q.explanation}</div>
                   </div>
                 )}
