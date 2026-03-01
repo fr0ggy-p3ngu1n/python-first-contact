@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="glow" cx="78%" cy="44%" r="42%">
+      <stop offset="0%" stop-color="#00d4c0" stop-opacity="0.13"/>
+      <stop offset="100%" stop-color="#00d4c0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="topBar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#00d4c0"/>
+      <stop offset="55%" stop-color="#cc40ff"/>
+      <stop offset="100%" stop-color="#00d4c0" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="dots" width="38" height="38" patternUnits="userSpaceOnUse">
+      <circle cx="19" cy="19" r="1.1" fill="#1a4260" opacity="0.55"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#081c2c"/>
+  <rect width="1200" height="630" fill="url(#dots)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <!-- Top accent bar -->
+  <rect x="0" y="0" width="1200" height="5" fill="url(#topBar)"/>
+
+  <!-- Left vertical accent -->
+  <rect x="74" y="55" width="2" height="520" fill="#1a4260"/>
+
+  <!-- ── ALIEN HEAD (right side) ── -->
+  <!-- Outer halo rings -->
+  <ellipse cx="938" cy="302" rx="195" ry="220" fill="none" stroke="#00d4c0" stroke-width="1" opacity="0.10"/>
+  <ellipse cx="938" cy="302" rx="168" ry="195" fill="none" stroke="#00d4c0" stroke-width="1" opacity="0.08"/>
+
+  <!-- Head -->
+  <ellipse cx="938" cy="300" rx="140" ry="188" fill="#0b2030" stroke="#00d4c0" stroke-width="2.5" opacity="0.95"/>
+
+  <!-- Left eye white -->
+  <ellipse cx="888" cy="268" rx="41" ry="60" fill="#00ffe8" opacity="0.88"/>
+  <!-- Left pupil -->
+  <ellipse cx="890" cy="274" rx="16" ry="23" fill="#081c2c"/>
+  <!-- Left eye shine -->
+  <ellipse cx="880" cy="260" rx="7" ry="9" fill="#ffffff" opacity="0.45"/>
+
+  <!-- Right eye white -->
+  <ellipse cx="988" cy="268" rx="41" ry="60" fill="#00ffe8" opacity="0.88"/>
+  <!-- Right pupil -->
+  <ellipse cx="986" cy="274" rx="16" ry="23" fill="#081c2c"/>
+  <!-- Right eye shine -->
+  <ellipse cx="978" cy="260" rx="7" ry="9" fill="#ffffff" opacity="0.45"/>
+
+  <!-- Nose -->
+  <ellipse cx="938" cy="368" rx="10" ry="7" fill="#00d4c0" opacity="0.28"/>
+
+  <!-- Mouth -->
+  <path d="M 910 408 Q 938 424 966 408" fill="none" stroke="#00d4c0" stroke-width="2.5" stroke-linecap="round" opacity="0.55"/>
+
+  <!-- Decorative stars -->
+  <circle cx="790" cy="108" r="3"   fill="#00d4c0" opacity="0.70"/>
+  <circle cx="1105" cy="88"  r="2"   fill="#00ffe8" opacity="0.55"/>
+  <circle cx="1140" cy="195" r="2.5" fill="#cc40ff" opacity="0.50"/>
+  <circle cx="808"  cy="530" r="2"   fill="#00d4c0" opacity="0.45"/>
+  <circle cx="1118" cy="490" r="3"   fill="#00ffe8" opacity="0.40"/>
+  <circle cx="1055" cy="568" r="2"   fill="#cc40ff" opacity="0.40"/>
+  <circle cx="762"  cy="375" r="1.5" fill="#00d4c0" opacity="0.50"/>
+  <circle cx="1148" cy="345" r="2"   fill="#00ffe8" opacity="0.30"/>
+  <circle cx="856"  cy="545" r="1.5" fill="#00d4c0" opacity="0.35"/>
+
+  <!-- ── TEXT (left side) ── -->
+
+  <!-- Eyebrow label -->
+  <text x="102" y="122"
+        font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+        font-size="15" font-weight="600" letter-spacing="5" fill="#4899aa">PYTHON QUIZ</text>
+
+  <!-- "Python:" -->
+  <text x="102" y="235"
+        font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+        font-size="90" font-weight="800" fill="#daf2ee">Python:</text>
+
+  <!-- "First Contact" in teal -->
+  <text x="102" y="338"
+        font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+        font-size="90" font-weight="800" fill="#00d4c0">First Contact</text>
+
+  <!-- Subtitle -->
+  <text x="102" y="396"
+        font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+        font-size="24" fill="#4899aa">XP, levels, achievements &amp; a live in-browser Python sandbox</text>
+
+  <!-- Pills -->
+  <!-- 25 Questions -->
+  <rect x="102" y="428" width="178" height="42" rx="21" fill="#0e2535" stroke="#1a4260" stroke-width="1.5"/>
+  <text x="191" y="454" font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+        font-size="17" font-weight="700" fill="#00ffe8" text-anchor="middle">25 Questions</text>
+
+  <!-- 4 Play Modes -->
+  <rect x="293" y="428" width="170" height="42" rx="21" fill="#0e2535" stroke="#1a4260" stroke-width="1.5"/>
+  <text x="378" y="454" font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+        font-size="17" font-weight="700" fill="#00ff8c" text-anchor="middle">4 Play Modes</text>
+
+  <!-- Live Sandbox -->
+  <rect x="476" y="428" width="160" height="42" rx="21" fill="#0e2535" stroke="#1a4260" stroke-width="1.5"/>
+  <text x="556" y="454" font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+        font-size="17" font-weight="700" fill="#cc40ff" text-anchor="middle">Live Sandbox</text>
+
+  <!-- Free -->
+  <rect x="649" y="428" width="90" height="42" rx="21" fill="#0e2535" stroke="#1a4260" stroke-width="1.5"/>
+  <text x="694" y="454" font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
+        font-size="17" font-weight="700" fill="#ff7a20" text-anchor="middle">Free</text>
+
+  <!-- URL -->
+  <text x="102" y="572"
+        font-family="Menlo, Monaco, Courier New, monospace"
+        font-size="20" fill="#4899aa" opacity="0.65">python-first-contact.vercel.app</text>
+</svg>
