@@ -8,7 +8,7 @@
 
 ## What it is
 
-A single-page React app that turns Python revision into a game. 51 questions across eight chapters, four play modes, a live Python sandbox powered by WebAssembly, and a full gamification layer — XP, levels, streaks, achievements, a daily challenge, and confetti on a perfect score.
+A single-page React app that turns Python revision into a game. 82 questions across eight chapters, four play modes, a live Python sandbox powered by WebAssembly, and a full gamification layer — XP, levels, streaks, achievements, a daily challenge, and confetti on a perfect score.
 
 The alien/teal aesthetic is intentional — it belongs to the person it was built for.
 
@@ -17,7 +17,7 @@ The alien/teal aesthetic is intentional — it belongs to the person it was buil
 ## Features
 
 ### Core quiz
-- **51 questions** spanning Chapters 1–8 of a Python fundamentals course
+- **82 questions** spanning Chapters 1–8 of a Python fundamentals course
 - **Multiple-choice and fill-in-the-blank** question types
 - **Syntax-highlighted code blocks** with a custom Dracula-inspired tokenizer
 - **Live Python sandbox** (`area51.py`) powered by [Pyodide](https://pyodide.org) (Python in WebAssembly — no server, runs entirely in the browser) — lazy-loaded only when you open it
@@ -96,14 +96,14 @@ The alien/teal aesthetic is intentional — it belongs to the person it was buil
 
 | # | Title | Topics | Questions |
 |---|---|---|---|
-| 1 | Basics | Syntax errors, pseudocode, escape characters, `print()`, `int()`, math, user input, f-strings | 8 |
-| 2 | Logic | Booleans, logical operators, short-circuit evaluation | 3 |
-| 3 | If Statements | Conditions, `elif`, indentation | 2 |
-| 4 | Loops | `for`, `while`, `range()`, augmented assignment, accumulator, input validation | 6 |
-| 5 | Lists & Functions | Lists, `for` + lists, void vs value-returning, nested calls, scope, walrus operator | 6 |
-| 6 | Lists Deep Dive | Indexing, negative indexes, tuples vs lists, `range()` → list, `*` repetition, `IndexError`, `len()`, `for` + strings, `in` operator, concatenation | 10 |
-| 7 | Strings | Slicing, `split()`, `strip()`, string methods (`upper`, `isalpha`, `endswith`, `replace`), concatenation, functions with strings | 5 |
-| 8 | OOP | Classes vs objects, defining classes, encapsulation, getters/setters, `__init__`, `__str__`, objects as arguments, polymorphism, inheritance, base vs subclass | 11 |
+| 1 | Basics | Syntax errors, pseudocode, escape characters, `print()`, `int()`, math, user input, f-strings, type conversion, string repetition | 12 |
+| 2 | Logic | Booleans, logical operators, short-circuit evaluation, comparison operators, chained comparisons, truthiness | 7 |
+| 3 | If Statements | Conditions, `elif`, indentation, nested if, conditional expressions | 6 |
+| 4 | Loops | `for`, `while`, `range()`, augmented assignment, accumulator, input validation, `break`, `continue`, `enumerate()` | 10 |
+| 5 | Lists & Functions | Lists, `for` + lists, void vs value-returning, nested calls, scope, walrus operator, default parameters, list methods, multiple return values, list comprehension | 10 |
+| 6 | Lists Deep Dive | Indexing, negative indexes, tuples vs lists, `range()` → list, `*` repetition, `IndexError`, `len()`, `for` + strings, `in` operator, concatenation, `pop()`, `remove()`, 2D lists, `insert()`, `count()` | 13 |
+| 7 | Strings | Slicing, `split()`, `strip()`, string methods (`upper`, `isalpha`, `endswith`, `replace`), concatenation, functions with strings, `find()`, string immutability, f-string expressions, `startswith`/`count` | 9 |
+| 8 | OOP | Classes vs objects, defining classes, encapsulation, getters/setters, `__init__`, `__str__`, objects as arguments, polymorphism, inheritance, base vs subclass, `super()`, method overriding, `isinstance()`, class variables | 15 |
 
 ---
 
@@ -185,7 +185,7 @@ python-first-contact/
 │   │   ├── chapters.js      # Chapter definitions + accent colours
 │   │   ├── levels.js        # Level thresholds + getLevel()
 │   │   ├── palette.js       # D colour object
-│   │   └── questions.js     # All 51 questions
+│   │   └── questions.js     # All 82 questions
 │   ├── hooks/
 │   │   ├── useAchievements.js
 │   │   ├── useCallsign.js
